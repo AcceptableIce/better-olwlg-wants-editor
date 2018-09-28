@@ -1,0 +1,51 @@
+{
+  "name": "better-olwlg-wants-editor",
+  "description": "A Vue-based wants editor interface for Better OLWLG",
+  "version": "1.0.0",
+  "author": "acceptableice",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development webpack-dev-server --open --hot",
+    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
+  },
+  "dependencies": {
+    "vuex": "^3.0.1",
+    "vuex-ts-decorators": "0.0.7",
+    "vuex-typescript": "^3.0.2"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ],
+  "devDependencies": {
+    "@types/lodash": "^4.14.106",
+    "@types/node": "^9.6.1",
+    "@types/webpack-env": "^1.13.6",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-stage-3": "^6.24.1",
+    "cross-env": "^5.1.4",
+    "css-loader": "^0.28.11",
+    "lodash": "^4.17.5",
+    "melanke-watchjs": "^1.4.3",
+    "svg-sprite-loader": "^3.7.3",
+    "ts-loader": "^4.1.0",
+    "typescript": "^2.8.1",
+    "uglifyjs-webpack-plugin": "^1.2.4",
+    "url-loader": "^1.1.1",
+    "vue": "^2.5.16",
+    "vue-class-component": "^6.2.0",
+    "vue-clickaway": "^2.1.0",
+    "vue-loader": "^15.2.4",
+    "vue-mixin-decorator": "^1.0.0",
+    "vue-property-decorator": "^6.0.0",
+    "vue-svg-loader": "^0.5.0",
+    "vue-template-compiler": "^2.5.16",
+    "webpack": "4.19.1",
+    "webpack-cli": "2.1.4",
+    "webpack-dev-server": "^3.1.1"
+  }
+}
