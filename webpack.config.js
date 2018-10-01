@@ -1,18 +1,17 @@
-var path = require("path");
-var webpack = require("webpack");
+const path = require("path");
+const webpack = require("webpack");
+const merge = require("webpack-merge");
 const { VueLoaderPlugin } = require("vue-loader");
 
 function srcPath(subdirectory) {
 	return path.join(__dirname, "src", subdirectory);
 }
 
-module.exports = {
-	entry: "./src/main.ts",
+const commonConfig = {
 	mode: "development",
 	output: {
 		path: path.resolve(__dirname, "./dist"),
-		publicPath: "/dist/",
-		filename: "build.js"
+		publicPath: "/dist/"
 	},
 	module: {
 		rules: [
@@ -76,6 +75,22 @@ module.exports = {
 	]
 };
 
+module.exports = [
+	merge(commonConfig, {
+		entry: "./src/browser.ts",
+		output: {
+			filename: "browser.js"
+		}
+	}),
+	merge(commonConfig, {
+		entry: "./src/index.ts",
+		output: {
+			filename: "index.js",
+			libraryTarget: "umd"
+		}
+	})
+];
+
 if(process.env.NODE_ENV === "production") {
 	module.exports.devtool = "#source-map";
 	// http://vue-loader.vuejs.org/en/workflow/production.html
@@ -90,3 +105,4 @@ if(process.env.NODE_ENV === "production") {
 		})
 	]);
 }
+

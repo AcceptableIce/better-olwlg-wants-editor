@@ -6,13 +6,14 @@ import _ from "lodash";
 import Want from "models/Want";
 import Listing from "models/Listing";
 
-import { Coordinate } from "utils/Coordinate";
+import { Coordinate, CoordinateBoundries, getBoundries } from "utils/Coordinate";
 
 export interface MassEditState {
 	isEditing: boolean,
 	enableAfterRelease: boolean,
 	startCell?: Coordinate,
-	endCell?: Coordinate
+	endCell?: Coordinate,
+	boundries?: CoordinateBoundries
 }
 
 export interface InteractivityState {
@@ -29,7 +30,8 @@ export const InteractivityConfiguration = {
 			isEditing: false,
 			enableAfterRelease: false,
 			startCell: undefined,
-			endCell: undefined
+			endCell: undefined,
+			boundries: undefined
 		}
 	},
 
@@ -39,7 +41,7 @@ export const InteractivityConfiguration = {
 		},
 
 		getMassEditStatus(state: InteractivityState): MassEditState {
-			return _.cloneDeep(state.massEdit);
+			return _.clone(state.massEdit);
 		}
 	},
 
@@ -49,16 +51,19 @@ export const InteractivityConfiguration = {
 			state.massEdit.startCell = payload.start;
 			state.massEdit.endCell = _.clone(payload.start);
 			state.massEdit.enableAfterRelease = payload.enableAfterRelease;
+			state.massEdit.boundries = getBoundries(state.massEdit.startCell, state.massEdit.endCell)
 		},
 
 		stopMassEdit(state: InteractivityState) {
 			state.massEdit.isEditing = false;
 			state.massEdit.startCell = undefined;
 			state.massEdit.endCell = undefined;
+			state.massEdit.boundries = undefined;
 		},
 
 		setMassEditEndCell(state: InteractivityState, cell: Coordinate) {
 			state.massEdit.endCell = cell;
+			state.massEdit.boundries = getBoundries(state.massEdit.startCell, state.massEdit.endCell)
 		}
 	}
 }

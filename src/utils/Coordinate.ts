@@ -8,15 +8,19 @@ export interface CoordinateBoundries {
 	max: Coordinate
 }
 
-export function getBoundries(a: Coordinate, b: Coordinate): CoordinateBoundries {
-	return {
-		min: {
-			x: Math.min(a.x, b.x),
-			y: Math.min(a.y, b.y)
-		},
-		max: {
-			x: Math.max(a.x, b.x),
-			y: Math.max(a.y, b.y)
-		}
-	};
+export function getBoundries(a?: Coordinate, b?: Coordinate): CoordinateBoundries | undefined {
+	if(a && b) {
+		return {
+			min: {
+				x: Math.min(a.x, b.x),
+				y: Math.min(a.y, b.y)
+			},
+			max: {
+				x: Math.max(a.x, b.x),
+				y: Math.max(a.y, b.y)
+			}
+		};
+	} else {
+		return undefined;
+	}
 }

@@ -3,12 +3,12 @@ import { getStoreAccessors } from "vuex-typescript";
 import { AppState } from "store/AppStore";
 import _ from "lodash";
 import Want from "models/Want";
-import Listing from "models/Listing";
+import Listing, { ListingId } from "models/Listing";
 import Dummy, { WantOrDummy } from "models/Dummy";
 
 import { MassEditState } from "store/InteractivityStore";
 
-import { getBoundries, Coordinate, CoordinateBoundries } from "utils/Coordinate";
+import { CoordinateBoundries } from "utils/Coordinate";
 
 export interface WantListingPair {
 	want: WantOrDummy,
@@ -20,32 +20,21 @@ export interface WantsState {
 	listings: Listing[]
 }
 
-const findWant = (state: WantsState, id: number) => _.find(state.wants, want => want.id === id);
-const findListing = (state: WantsState, id: number) => _.find(state.listings, listing => listing.id === id);
+const findWant = (state: WantsState, id: ListingId) => _.find(state.wants, want => want.id === id);
+const findListing = (state: WantsState, id: ListingId) => _.find(state.listings, listing => listing.id === id);
+
+const concatAndSortWantsAndDumimies = (state: WantsState) => (<WantOrDummy[]>state.wants)
+	.concat(<Dummy[]>state.listings.filter(item => item instanceof Dummy))
+	.sort((a, b) => a.order - b.order);
 
 type WantsContext = ActionContext<WantsState, AppState>;
-
-const want1 = new Want(1, 175914, "Want 1", "AcceptableIce");
-const listing2 = new Listing(2, "Listing 2");
 
 export const WantsConfiguration = {
 	namespaced: true,
 
 	state: {
-		wants: [
-			want1,
-			new Want(2, 175914, "Want 2", "AcceptableIce", [
-				new Want(3, 1000, "SweetnerTest", "AcceptableIce")
-			]),
-			new Want(3, 123, "Game with a Longer Name than the Rest", "AcceptableIce")
-		],
-		listings: [
-			new Listing(1, "Listing 1", [want1]),
-			listing2,
-			new Listing(3, "Listing 3"),
-			new Listing(4, "Listing 4"),
-			new Dummy(5, "TestDummy", [listing2])
-		]
+		wants: [],
+		listings: []
 	},
 
 	getters: {
@@ -69,6 +58,27 @@ export const WantsConfiguration = {
 			return <Dummy[]>state.listings.filter(item => item instanceof Dummy).map(_.cloneDeep);
 		},
 
+		getSortedWantsAndDummies(state: WantsState): WantOrDummy[] {
+			return concatAndSortWantsAndDumimies(state).map(_.cloneDeep);
+		},
+
+		getRowFrequencies(state: WantsState): { [index: string]: number } {
+			const output: { [index: string]: number } = {};
+
+			state.listings.forEach(listing => {
+				if(listing instanceof Dummy) {
+					output[listing.id] = (<Dummy>listing).children.length;
+				} else {
+					listing.wants.forEach(want => {
+						if(!output[want.id]) output[want.id] = 0;
+
+						output[want.id] += 1;
+					});
+				}
+			});
+
+			return output;
+		}
 	},
 
 	mutations: {
@@ -117,12 +127,13 @@ export const WantsConfiguration = {
 		},
 
 		updateWantStatusByMassEdit(state: WantsState, massEditState: MassEditState) {
-			if(massEditState.startCell && massEditState.endCell) {
-				const boundries: CoordinateBoundries = getBoundries(massEditState.startCell, massEditState.endCell);
+			if(massEditState.boundries) {
+				const boundries: CoordinateBoundries = massEditState.boundries;
+				const wantsAndDummies: WantOrDummy[] = concatAndSortWantsAndDumimies(state);
 
 				for(let y = boundries.min.y; y <= boundries.max.y; y += 1) {
 					for(let x = boundries.min.x; x <= boundries.max.x; x += 1) {
-						let want: WantOrDummy = state.wants[y];
+						let want: WantOrDummy = wantsAndDummies[y];
 						const listing = state.listings[x];
 
 						if(y >= state.wants.length) {
@@ -150,6 +161,11 @@ export const WantsConfiguration = {
 					}
 				}
 			}
+		},
+
+		importData(state: WantsState, data: WantsState) {
+			state.listings = data.listings;
+			state.wants = data.wants;
 		}
 	}
 }
@@ -163,6 +179,8 @@ export const getWantById = read(getters.getWantById);
 export const getListings = read(getters.getListings);
 export const getListingById = read(getters.getListingById);
 export const getDummies = read(getters.getDummies);
+export const getSortedWantsAndDummies = read(getters.getSortedWantsAndDummies);
+export const getRowFrequencies = read(getters.getRowFrequencies);
 
 const mutations = WantsConfiguration.mutations;
 
@@ -173,3 +191,4 @@ export const removeWantFromListing = commit(mutations.removeWantFromListing);
 export const addListingToDummy = commit(mutations.addListingToDummy);
 export const removeListingFromDummy = commit(mutations.removeListingFromDummy);
 export const updateWantStatusByMassEdit = commit(mutations.updateWantStatusByMassEdit);
+export const importData = commit(mutations.importData);

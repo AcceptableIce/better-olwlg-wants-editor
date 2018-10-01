@@ -25,7 +25,7 @@
         <template slot="tooltip-text">View sweeteners.</template>
         <template slot="accessibility-text">View sweeteners.</template>
         <template slot="editor-content">
-          <sweetener v-for="sweetener in want.sweeteners" :key="sweetener.id" :sweetener="sweetener"/>
+          <sweetener v-for="(sweetener, index) in want.sweeteners" :key="index" :sweetener="sweetener"/>
         </template>
       </toggleable-editor-image-link>
       <div v-else class="no-sweeteners-spacer"></div>
@@ -82,6 +82,7 @@ export default class WantsGridItemDataCell extends Vue {
   margin-bottom: 0px;
   text-decoration: none;
   color: #0d17ad;
+  white-space: nowrap;
 }
 
 .item-owner {

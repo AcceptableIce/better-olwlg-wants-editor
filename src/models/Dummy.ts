@@ -1,4 +1,4 @@
-import Listing from "./Listing";
+import Listing, { ListingId } from "./Listing";
 import Want from "./Want";
 
 import _ from "lodash";
@@ -6,12 +6,15 @@ import _ from "lodash";
 export default class Dummy extends Listing {
 	children: Listing[];
 
-	constructor(id: number, name: string, children: Listing[]) {
+	order: number;
+
+	constructor(id: string, name: string, order: number, children: Listing[] = []) {
 		super(id, name);
+		this.order = order;
 		this.children = children;
 	}
 
-	getChild(id: number): Listing | undefined {
+	getChild(id: ListingId): Listing | undefined {
 		return _.find(this.children, { id });
 	}
 

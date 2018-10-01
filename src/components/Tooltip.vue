@@ -60,6 +60,10 @@ export default class Tooltip extends Vue {
   z-index: 38;
 }
 
+.tooltip b {
+  font-family: inherit;
+}
+
 .left {
   left: -0.25rem;
   transform: translate(-100%, -50%);

@@ -2,13 +2,15 @@ import Want from "models/Want";
 
 import _ from "lodash";
 
+export type ListingId = number | string;
+
 export default class Listing {
-	id: number;
+	id: ListingId;
 	name: string;
 
 	wants: Want[];
 
-	constructor(id: number, name: string, wants: Want[] = []) {
+	constructor(id: ListingId, name: string, wants: Want[] = []) {
 		this.id = id;
 		this.name = name;
 		this.wants = wants;

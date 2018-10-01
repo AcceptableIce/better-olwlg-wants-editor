@@ -5,20 +5,20 @@
   "author": "acceptableice",
   "license": "MIT",
   "private": true,
+  "main": "./dist/index.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack-dev-server --open --hot",
-    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
-  },
-  "dependencies": {
-    "vuex": "^3.0.1",
-    "vuex-ts-decorators": "0.0.7",
-    "vuex-typescript": "^3.0.2"
+    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
+    "bundle": "vue-cli-service build --target lib --name better-olwlg-wants-editor ./src/components/bundle.ts"
   },
   "browserslist": [
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
   ],
+  "peerDependencies": {
+    "vue": "^2.0.0"
+  },
   "devDependencies": {
     "@types/lodash": "^4.14.106",
     "@types/node": "^9.6.1",
@@ -38,14 +38,19 @@
     "url-loader": "^1.1.1",
     "vue": "^2.5.16",
     "vue-class-component": "^6.2.0",
+    "vue-cli": "^2.9.6",
     "vue-clickaway": "^2.1.0",
     "vue-loader": "^15.2.4",
     "vue-mixin-decorator": "^1.0.0",
     "vue-property-decorator": "^6.0.0",
     "vue-svg-loader": "^0.5.0",
     "vue-template-compiler": "^2.5.16",
+    "vuex": "^3.0.1",
+    "vuex-ts-decorators": "0.0.7",
+    "vuex-typescript": "^3.0.2",
     "webpack": "4.19.1",
     "webpack-cli": "2.1.4",
-    "webpack-dev-server": "^3.1.1"
+    "webpack-dev-server": "^3.1.1",
+    "webpack-merge": "^4.1.4"
   }
 }

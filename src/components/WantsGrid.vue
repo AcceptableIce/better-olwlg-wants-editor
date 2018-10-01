@@ -9,7 +9,7 @@
         <wants-grid-item-data-cell :want="want" :key="'item-data-' + want.id"/>
 
         <template v-for="(listing, x) in listings">
-          <wants-grid-toggle-cell :class="calculateCellClasses(x, y)" :x="x" :y="y" :want="want" :listing="listing" :key="`cell-${(listing.id << 16) ^ want.id}`"/> 
+          <wants-grid-toggle-cell :class="calculateCellClasses(x, y)" :x="x" :y="y" :want="want" :listing="listing" :key="`cell-${listing.id}-${want.id}`"/> 
         </template>
       </template>
     </div>
@@ -43,7 +43,7 @@ export default class WantsGrid extends Vue {
   }
 
   get wantsAndDummies(): WantOrDummy[] {
-    return (<WantOrDummy[]>this.wants).concat(wantsStore.getDummies(this.$store));
+    return wantsStore.getSortedWantsAndDummies(this.$store);
   }
 
   created() {
@@ -71,7 +71,8 @@ export default class WantsGrid extends Vue {
 <style scoped>
 .wants-grid-container {
   position: relative;
-  margin-top: 40px;
+  margin-top: 72px;
+  clip-path: inset(-72px -1000px -1000px 0);
 }
 
 .wants-grid {

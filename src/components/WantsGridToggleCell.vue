@@ -1,8 +1,8 @@
 <template>
-  <div :class="cellClasses" @mousedown="startEditing($event)" @mousemove="onMouseMove($event)" @focus="setFocus(true)" @mouseover="setFocus(true)" @blur="setFocus(false)" @mouseout="setFocus(false)">
+  <div :class="cellClasses" @mousedown="startEditing($event)" @focus="setFocus(true)" @mouseover="onMouseOver($event)" @blur="setFocus(false)" @mouseout="setFocus(false)">
     <button class="toggle" @keyup.enter="toggle()" @keyup.space="toggle()" :disabled="isDummyCrossoverCell"></button>
 
-    <tooltip :visible="focused" position="bottom">{{tooltipText}}</tooltip>
+    <tooltip :visible="focused" position="bottom" v-html="tooltipText"/>
   </div>
 </template>
 
@@ -13,7 +13,7 @@ import * as interactivity from "store/InteractivityStore";
 
 import Tooltip from "components/Tooltip.vue";
 
-import { getBoundries, Coordinate, CoordinateBoundries } from "utils/Coordinate";
+import { Coordinate, CoordinateBoundries } from "utils/Coordinate";
 
 import Dummy, { WantOrDummy } from "models/Dummy";
 import Listing from "models/Listing";
@@ -45,8 +45,12 @@ export default class WantsGridToggleCell extends Vue {
     }
   }
 
+  created() {
+
+  }
+
   get cellClasses(): object {
-    const pendingMassEdit = this.pendingMassEdit;
+    const pendingMassEdit = this.getPendingMassEdit();
 
     return {
       "wants-grid-cell": true,
@@ -77,9 +81,17 @@ export default class WantsGridToggleCell extends Vue {
 
   get tooltipText(): string {
     if(this.isDummyListing) {
-      return `${this.want.name} is a duplicate of ${this.listing.name}.`;
+      if(this.toggled) {
+        return `${this.want.name} is a duplicate of ${this.listing.name}.`;
+      } else {
+        return `${this.want.name} is <b>not</b> a duplicate of ${this.listing.name}.`
+      }
     } else {
-      return `Trade my ${this.listing.name} for ${this.want.name}.`;
+      if(this.toggled) {
+        return `Trading my ${this.listing.name} for ${this.want.name}.`;
+      } else {
+        return `<b>Not trading</b> my ${this.listing.name} for ${this.want.name}.`;
+      }
     }
   }
 
@@ -92,12 +104,14 @@ export default class WantsGridToggleCell extends Vue {
     });
   }
 
-  onMouseMove(event: MouseEvent) {
+  onMouseOver(event: MouseEvent) {
     if(interactivity.isMassEditing(this.$store)) {
       event.preventDefault();
 
       interactivity.setMassEditEndCell(this.$store, this.coordinates);
     }
+
+    this.setFocus(true);
   }
 
   toggle() {
@@ -113,11 +127,11 @@ export default class WantsGridToggleCell extends Vue {
     this.focused = focus && !interactivity.isMassEditing(this.$store);
   }
 
-  get pendingMassEdit(): string | undefined {
+  getPendingMassEdit(): string | undefined {
     const massEditStatus = interactivity.getMassEditStatus(this.$store);
 
-    if(massEditStatus.isEditing && massEditStatus.startCell && massEditStatus.endCell) {
-      const boundries: CoordinateBoundries = getBoundries(massEditStatus.startCell, massEditStatus.endCell);
+    if(massEditStatus.isEditing && massEditStatus.boundries) {
+      const boundries: CoordinateBoundries = massEditStatus.boundries;
 
       if(boundries.min.x <= this.x && boundries.min.y <= this.y && boundries.max.x >= this.x && boundries.max.y >= this.y) {
         return massEditStatus.enableAfterRelease ? "enable" : "disable";
@@ -216,10 +230,6 @@ export default class WantsGridToggleCell extends Vue {
 .dummy-crossover .toggle::before {
   background-color: rgba(0, 0, 0, 0.25);
   z-index: 1;
-}
-
-.emphasis {
-  display: inline-block;
 }
 
 .enabled .toggle::before {

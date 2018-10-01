@@ -22,7 +22,7 @@ export default class WantsGridHeaderCell extends Vue {
   get classList(): object {
     const output: any = {
       "wants-grid-cell": true,
-      "header": true,
+      "header-cell": true,
       "dummy": this.isDummy
     };
 
@@ -38,7 +38,7 @@ export default class WantsGridHeaderCell extends Vue {
 </script>
 
 <style scoped>
-.wants-grid-cell.header {
+.wants-grid-cell.header-cell {
   position: relative;
   height: 140px;
   white-space: nowrap;
@@ -52,12 +52,12 @@ export default class WantsGridHeaderCell extends Vue {
   z-index: -1;
 }
 
-.header > div {
+.header-cell > div {
   position: relative;
   transform: translate(0px, 30.5px) rotate(315deg);
 }
 
-.header > div > span {
+.header-cell > div > span {
   height: 28.28px;
   padding: 1px 20px 1px 36px;
   width: 200px;
