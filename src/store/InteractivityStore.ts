@@ -1,7 +1,7 @@
 import { Store, StoreOptions, ActionContext } from "vuex";
 import { getStoreAccessors } from "vuex-typescript";
 import { AppState } from "store/AppStore";
-import _ from "lodash";
+import clone from "lodash/clone";
 
 import Want from "models/Want";
 import Listing from "models/Listing";
@@ -41,7 +41,7 @@ export const InteractivityConfiguration = {
 		},
 
 		getMassEditStatus(state: InteractivityState): MassEditState {
-			return _.clone(state.massEdit);
+			return clone(state.massEdit);
 		}
 	},
 
@@ -49,7 +49,7 @@ export const InteractivityConfiguration = {
 		startMassEdit(state: InteractivityState, payload: { enableAfterRelease: boolean, start: Coordinate }) {
 			state.massEdit.isEditing = true;
 			state.massEdit.startCell = payload.start;
-			state.massEdit.endCell = _.clone(payload.start);
+			state.massEdit.endCell = clone(payload.start);
 			state.massEdit.enableAfterRelease = payload.enableAfterRelease;
 			state.massEdit.boundries = getBoundries(state.massEdit.startCell, state.massEdit.endCell)
 		},

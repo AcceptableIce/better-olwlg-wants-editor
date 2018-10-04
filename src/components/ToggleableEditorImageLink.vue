@@ -49,11 +49,26 @@ export default class ToggleableEditorImageLink extends Vue {
 			const element = (<HTMLElement>event.target);
 
 			this.editorOffsetX = element.offsetLeft + element.offsetWidth / 2;
+
+			if(this.showEditor) {
+				this.$nextTick(() => {
+					const firstInput = <HTMLInputElement>this.$el.querySelector(".toggleable-editor input, .toggleable-editor button");
+
+					if(firstInput) firstInput.focus();
+				});
+			} else {
+				this.focusLink();
+			}
 		}
 	}
 
 	closeEditor(value: number) {
 		this.showEditor = false;
+		this.focusLink();
+	}
+
+	focusLink() {
+		(<HTMLInputElement>this.$el.querySelector(".tooltip-image-link")).focus();
 	}
 }
 </script>

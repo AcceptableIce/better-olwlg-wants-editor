@@ -1,8 +1,10 @@
 <template>
   <div :class="cellClasses" @mousedown="startEditing($event)" @focus="setFocus(true)" @mouseover="onMouseOver($event)" @blur="setFocus(false)" @mouseout="setFocus(false)">
-    <button class="toggle" @keyup.enter="toggle()" @keyup.space="toggle()" :disabled="isDummyCrossoverCell"></button>
-
-    <tooltip :visible="focused" position="bottom" v-html="tooltipText"/>
+    <button class="toggle" @keyup.enter="toggle()" @keyup.space="toggle()" :disabled="isDummyCrossoverCell">
+      <accessibility-text>{{accessibilityText}}</accessibility-text>
+    </button>
+    
+    <tooltip class="cell-description-tooltip" :visible="focused" position="bottom" v-html="tooltipText"/>
   </div>
 </template>
 
@@ -11,6 +13,7 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 import * as wantsStore from "store/WantsStore";
 import * as interactivity from "store/InteractivityStore";
 
+import AccessibilityText from "components/AccessibilityText.vue";
 import Tooltip from "components/Tooltip.vue";
 
 import { Coordinate, CoordinateBoundries } from "utils/Coordinate";
@@ -20,7 +23,7 @@ import Listing from "models/Listing";
 import Want from "models/Want";
 
 @Component({
-  components: { Tooltip }
+  components: { Tooltip, AccessibilityText }
 })
 export default class WantsGridToggleCell extends Vue {
   @Prop({ required: true })
@@ -43,10 +46,6 @@ export default class WantsGridToggleCell extends Vue {
     } else {
       return this.listing.hasWant(this.want);
     }
-  }
-
-  created() {
-
   }
 
   get cellClasses(): object {
@@ -93,6 +92,14 @@ export default class WantsGridToggleCell extends Vue {
         return `<b>Not trading</b> my ${this.listing.name} for ${this.want.name}.`;
       }
     }
+  }
+
+  get accessibilityText(): string {
+    const container = document.createElement("div");
+
+    container.innerHTML = this.tooltipText;
+
+    return container.textContent || "";
   }
 
   startEditing(event: MouseEvent) {
@@ -239,5 +246,9 @@ export default class WantsGridToggleCell extends Vue {
   height: 50%;
   background-color: #233177;
   border-radius: 4px;
+}
+
+.cell-description-tooltip {
+  text-align: center;
 }
 </style>

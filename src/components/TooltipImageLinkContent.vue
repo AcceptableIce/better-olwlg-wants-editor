@@ -27,5 +27,7 @@ export default class TooltipImageLink extends Vue {
 <style scoped>
 .tooltip-content {
   color: #333;
+  text-align: center;
+  max-width: 225px; /* Avoid edge of screen cutoff */
 }
 </style>

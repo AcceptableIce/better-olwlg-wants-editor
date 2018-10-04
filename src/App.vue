@@ -1,8 +1,13 @@
 <template>
 	<div class="wants-editor">
-		<wants-grid/>
-    <div class="actions">
-      <submit-button/>
+    <template v-if="wants.length > 0">
+      <wants-grid/>
+      <div class="actions" v-if="isEditable">
+        <submit-button/>
+      </div>
+    </template>
+    <div class="no-items-message" v-else>
+      You haven't added any wants to your wantlist! Add a few, then return here.
     </div>
 	</div>
 </template>
@@ -43,6 +48,8 @@ type ImportListing = {
 };
 
 type ImportData = {
+  listId: number,
+  editable: boolean,
   wants: ImportWant[],
   listings: ImportListing[]
 };
@@ -55,15 +62,28 @@ export default class App extends Vue {
   @Prop({ default: () => ({}) })
   data!: ImportData;
 
+  get wants(): Want[] {
+    return WantsStore.getWants(this.$store);
+  }
+
+  get isEditable(): boolean {
+    return WantsStore.isEditable(this.$store);
+  }
+
   created() {
     // Recreate the data as a wants state.
     const state: WantsStore.WantsState = {
+      listId: -1,
+      editable: true,
       listings: [],
       wants: []
     };
 
     const wantsMap: { [index: number]: Want } = {};
     const listingMap: { [index: number]: Listing } = {};
+
+    state.listId = this.data.listId;
+    state.editable = this.data.editable;
 
     this.data.wants.forEach(wantData => {
       const want = new Want(wantData.id, wantData.bgg_id, wantData.name, wantData.order, wantData.owner);
@@ -117,5 +137,13 @@ export default class App extends Vue {
   flex-direction: column;
   width: 100%;
   height: 100%;
+  min-height: 150px;
+}
+
+.no-items-message {
+  position: relative;
+  font-size: 1.25rem;
+  text-align: center;
+  margin: auto 0;
 }
 </style>

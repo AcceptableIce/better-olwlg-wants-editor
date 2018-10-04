@@ -8,13 +8,10 @@
   "main": "./dist/index.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack-dev-server --open --hot",
-    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
-    "bundle": "vue-cli-service build --target lib --name better-olwlg-wants-editor ./src/components/bundle.ts"
+    "build": "cross-env NODE_ENV=production webpack --env production --progress --hide-modules"
   },
   "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not ie <= 8"
+    "last 2 Chrome versions"
   ],
   "peerDependencies": {
     "vue": "^2.0.0"
@@ -34,7 +31,7 @@
     "svg-sprite-loader": "^3.7.3",
     "ts-loader": "^4.1.0",
     "typescript": "^2.8.1",
-    "uglifyjs-webpack-plugin": "^1.2.4",
+    "uglifyjs-webpack-plugin": "^2.0.1",
     "url-loader": "^1.1.1",
     "vue": "^2.5.16",
     "vue-class-component": "^6.2.0",
@@ -49,6 +46,7 @@
     "vuex-ts-decorators": "0.0.7",
     "vuex-typescript": "^3.0.2",
     "webpack": "4.19.1",
+    "webpack-bundle-analyzer": "^3.0.2",
     "webpack-cli": "2.1.4",
     "webpack-dev-server": "^3.1.1",
     "webpack-merge": "^4.1.4"

@@ -1,6 +1,6 @@
 import Want from "models/Want";
 
-import _ from "lodash";
+import find from "lodash/find";
 
 export type ListingId = number | string;
 
@@ -17,7 +17,7 @@ export default class Listing {
 	}
 
 	getWant(id: number): Want | undefined {
-		return _.find(this.wants, { id });
+		return find(this.wants, { id });
 	}
 
 	hasWant(want: Want): boolean {

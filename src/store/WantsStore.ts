@@ -1,7 +1,10 @@
 import { Store, StoreOptions, ActionContext } from "vuex";
 import { getStoreAccessors } from "vuex-typescript";
 import { AppState } from "store/AppStore";
-import _ from "lodash";
+
+import find from "lodash/find";
+import cloneDeep from "lodash/cloneDeep";
+
 import Want from "models/Want";
 import Listing, { ListingId } from "models/Listing";
 import Dummy, { WantOrDummy } from "models/Dummy";
@@ -16,12 +19,14 @@ export interface WantListingPair {
 }
 
 export interface WantsState {
+	listId: number,
+	editable: boolean,
 	wants: Want[],
 	listings: Listing[]
 }
 
-const findWant = (state: WantsState, id: ListingId) => _.find(state.wants, want => want.id === id);
-const findListing = (state: WantsState, id: ListingId) => _.find(state.listings, listing => listing.id === id);
+const findWant = (state: WantsState, id: ListingId) => find(state.wants, want => want.id === id);
+const findListing = (state: WantsState, id: ListingId) => find(state.listings, listing => listing.id === id);
 
 const concatAndSortWantsAndDumimies = (state: WantsState) => (<WantOrDummy[]>state.wants)
 	.concat(<Dummy[]>state.listings.filter(item => item instanceof Dummy))
@@ -33,33 +38,43 @@ export const WantsConfiguration = {
 	namespaced: true,
 
 	state: {
+		listId: -1,
+		editable: false,
 		wants: [],
 		listings: []
 	},
 
 	getters: {
+		getListId(state: WantsState) {
+			return state.listId;
+		},
+
+		isEditable(state: WantsState) {
+			return state.editable;
+		},
+
 		getWants(state: WantsState) {
-			return state.wants.map(_.cloneDeep);
+			return state.wants.map(cloneDeep);
 		},
 
 		getWantById(state: WantsState) {
-			return (id: number) => _.cloneDeep(findWant(state, id));
+			return (id: number) => cloneDeep(findWant(state, id));
 		},
 
 		getListings(state: WantsState) {
-			return state.listings.map(_.cloneDeep);
+			return state.listings.map(cloneDeep);
 		},
 
 		getListingById(state: WantsState) {
-			return (id: number) => _.cloneDeep(findListing(state, id));
+			return (id: number) => cloneDeep(findListing(state, id));
 		},
 
 		getDummies(state: WantsState): Dummy[] {
-			return <Dummy[]>state.listings.filter(item => item instanceof Dummy).map(_.cloneDeep);
+			return <Dummy[]>state.listings.filter(item => item instanceof Dummy).map(cloneDeep);
 		},
 
 		getSortedWantsAndDummies(state: WantsState): WantOrDummy[] {
-			return concatAndSortWantsAndDumimies(state).map(_.cloneDeep);
+			return concatAndSortWantsAndDumimies(state).map(cloneDeep);
 		},
 
 		getRowFrequencies(state: WantsState): { [index: string]: number } {
@@ -164,6 +179,8 @@ export const WantsConfiguration = {
 		},
 
 		importData(state: WantsState, data: WantsState) {
+			state.listId = data.listId;
+			state.editable = data.editable;
 			state.listings = data.listings;
 			state.wants = data.wants;
 		}
@@ -174,6 +191,8 @@ const { commit, read, dispatch } = getStoreAccessors<WantsState, AppState>("want
 
 const getters = WantsConfiguration.getters;
 
+export const getListId = read(getters.getListId);
+export const isEditable = read(getters.isEditable);
 export const getWants = read(getters.getWants);
 export const getWantById = read(getters.getWantById);
 export const getListings = read(getters.getListings);

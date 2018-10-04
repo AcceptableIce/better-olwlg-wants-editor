@@ -3,7 +3,7 @@
 		<div class="item-metadata">
 			<a class="item-name" :href="`https://www.boardgamegeek.com/thing/${want.bgg_id}`">
 				{{want.name}}
-				<accessibility-text>. View this item on BoardGameGeek.</accessibility-text>
+				<accessibility-text>{{want.name}}. Listed by {{want.owner}}. Click to view this item on BoardGameGeek</accessibility-text>
 			</a>
 			<div class="item-owner">{{want.owner}}</div>
     </div>
@@ -14,7 +14,7 @@
 
       <toggleable-editor-image-link class="item-option" image="edit-value" closeLabel="Save">
         <template slot="tooltip-text">Assign a value to this item.</template>
-        <template slot="accessibility-text">Assign a value to this item.</template>
+        <template slot="accessibility-text">Assign a value to this item</template>
         <template slot="editor-content">
     			<label class="value-label" for="value-input">Value</label>
 			    <input type="number" class="value-input" id="value-input" :value="value"/>
@@ -23,7 +23,7 @@
 
       <toggleable-editor-image-link v-if="!isDummy && want.sweeteners.length > 0" class="sweeteners-editor" image="sweeteners" closeLabel="Close">
         <template slot="tooltip-text">View sweeteners.</template>
-        <template slot="accessibility-text">View sweeteners.</template>
+        <template slot="accessibility-text">View sweeteners</template>
         <template slot="editor-content">
           <sweetener v-for="(sweetener, index) in want.sweeteners" :key="index" :sweetener="sweetener"/>
         </template>

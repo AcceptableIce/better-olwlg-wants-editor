@@ -1,7 +1,7 @@
 import Listing, { ListingId } from "./Listing";
 import Want from "./Want";
 
-import _ from "lodash";
+import find from "lodash/find";
 
 export default class Dummy extends Listing {
 	children: Listing[];
@@ -15,7 +15,7 @@ export default class Dummy extends Listing {
 	}
 
 	getChild(id: ListingId): Listing | undefined {
-		return _.find(this.children, { id });
+		return find(this.children, { id });
 	}
 
 	hasChild(listing: Listing): boolean {

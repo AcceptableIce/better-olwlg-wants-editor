@@ -2,13 +2,17 @@ const path = require("path");
 const webpack = require("webpack");
 const merge = require("webpack-merge");
 const { VueLoaderPlugin } = require("vue-loader");
+const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
+const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 
 function srcPath(subdirectory) {
 	return path.join(__dirname, "src", subdirectory);
 }
 
+const isProduction = process.env.NODE_ENV === "production"
+
 const commonConfig = {
-	mode: "development",
+	mode: isProduction ? "production" : "development",
 	output: {
 		path: path.resolve(__dirname, "./dist"),
 		publicPath: "/dist/"
@@ -70,10 +74,43 @@ const commonConfig = {
 		hints: false
 	},
 	devtool: "#eval-source-map",
+	optimization: {
+		minimizer: [new UglifyJsPlugin({
+			uglifyOptions: {
+				output: {
+					comments: false
+				},
+				compress: {
+					unused: true,
+					dead_code: true,
+					warnings: false,
+					drop_debugger: true,
+					conditionals: true,
+					evaluate: true,
+					drop_console: true,
+					sequences: true,
+					booleans: true
+				}
+			}
+		})]
+	},
 	plugins: [
-		new VueLoaderPlugin()
+		new VueLoaderPlugin(),
+		new BundleAnalyzerPlugin()
 	]
 };
+
+if(isProduction) {
+	commonConfig.devtool = "#source-map";
+	commonConfig.resolve.alias.vue$ = "vue/dist/vue.min.js";
+
+	// http://vue-loader.vuejs.org/en/workflow/production.html
+	commonConfig.plugins = (commonConfig.plugins || []).concat([
+		new webpack.LoaderOptionsPlugin({
+			minimize: true
+		})
+	]);
+}
 
 module.exports = [
 	merge(commonConfig, {
@@ -90,19 +127,4 @@ module.exports = [
 		}
 	})
 ];
-
-if(process.env.NODE_ENV === "production") {
-	module.exports.devtool = "#source-map";
-	// http://vue-loader.vuejs.org/en/workflow/production.html
-	module.exports.plugins = (module.exports.plugins || []).concat([
-		new webpack.DefinePlugin({
-			"process.env": {
-				NODE_ENV: "production"
-			}
-		}),
-		new webpack.LoaderOptionsPlugin({
-			minimize: true
-		})
-	]);
-}
 

@@ -1,6 +1,6 @@
 <template>
   <div class="wants-grid-container">
-    <div class="wants-grid" :style="{ gridTemplateColumns: `auto repeat(${listings.length}, 40px)` }">
+    <div class="wants-grid" :style="{ gridTemplateColumns: `min-content repeat(${listings.length}, 40px)` }">
       <div class="wants-grid-cell header-spacer"></div>
       
       <wants-grid-header-cell v-for="(listing, index) in listings" :listing="listing" :index="index" :key="`listing-${listing.id}`"/>
@@ -73,6 +73,7 @@ export default class WantsGrid extends Vue {
   position: relative;
   margin-top: 72px;
   clip-path: inset(-72px -1000px -1000px 0);
+  z-index: 1;
 }
 
 .wants-grid {
