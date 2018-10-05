@@ -96,7 +96,7 @@ const commonConfig = {
 	},
 	plugins: [
 		new VueLoaderPlugin(),
-		new BundleAnalyzerPlugin()
+		//new BundleAnalyzerPlugin()
 	]
 };
 

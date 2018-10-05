@@ -24,6 +24,7 @@ export default class Tooltip extends Vue {
 <style scoped>
 .tooltip {
   position: absolute;
+  display: block;
   left: 100%;
   top: 50%;
   width: max-content;
