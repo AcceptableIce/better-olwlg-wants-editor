@@ -141,6 +141,42 @@ export const WantsConfiguration = {
 			}
 		},
 
+		deleteItem(state: WantsState, want: WantOrDummy) {
+			if(want instanceof Want) {
+				const matchingWant = findWant(state, want.id);
+
+				if(matchingWant) matchingWant.toDelete = true;
+			} else {
+				const matchingDummy = <Dummy>findListing(state, want.id);
+
+				if(matchingDummy) matchingDummy.toDelete = true;
+			}
+		},
+
+		restoreItem(state: WantsState, want: WantOrDummy) {
+			if(want instanceof Want) {
+				const matchingWant = findWant(state, want.id);
+
+				if(matchingWant) matchingWant.toDelete = false;
+			} else {
+				const matchingDummy = <Dummy>findListing(state, want.id);
+
+				if(matchingDummy) matchingDummy.toDelete = false;
+			}
+		},
+
+		updateValue(state: WantsState, payload: { want: WantOrDummy, value: number }) {
+			let target: WantOrDummy | undefined;
+
+			if(payload.want instanceof Dummy) {
+				target = <Dummy>findListing(state, payload.want.id);
+			} else {
+				target = findWant(state, payload.want.id);
+			}
+
+			if(target) target.value = payload.value;
+		},
+
 		updateWantStatusByMassEdit(state: WantsState, massEditState: MassEditState) {
 			if(massEditState.boundries) {
 				const boundries: CoordinateBoundries = massEditState.boundries;
@@ -209,5 +245,8 @@ export const addWantToListing = commit(mutations.addWantToListing);
 export const removeWantFromListing = commit(mutations.removeWantFromListing);
 export const addListingToDummy = commit(mutations.addListingToDummy);
 export const removeListingFromDummy = commit(mutations.removeListingFromDummy);
+export const deleteItem = commit(mutations.deleteItem);
+export const restoreItem = commit(mutations.restoreItem);
+export const updateValue = commit(mutations.updateValue);
 export const updateWantStatusByMassEdit = commit(mutations.updateWantStatusByMassEdit);
 export const importData = commit(mutations.importData);

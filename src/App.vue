@@ -34,6 +34,7 @@ type ImportWant = {
   name: string,
   bgg_id: number,
   owner: string,
+  value: number,
   order: number,
   sweeteners: ImportSweetener[]
 };
@@ -43,6 +44,7 @@ type ImportListing = {
   name: string,
   wants: number[],
   order?: number,
+  value?: number,
   children?: number[]
   isDummy: boolean
 };
@@ -86,7 +88,7 @@ export default class App extends Vue {
     state.editable = this.data.editable;
 
     this.data.wants.forEach(wantData => {
-      const want = new Want(wantData.id, wantData.bgg_id, wantData.name, wantData.order, wantData.owner);
+      const want = new Want(wantData.id, wantData.bgg_id, wantData.name, wantData.order, wantData.value, wantData.owner);
 
       wantData.sweeteners.forEach(sweetener => {
         want.sweeteners.push(new Want(
@@ -105,7 +107,7 @@ export default class App extends Vue {
       let listing: Listing;
 
       if(listingData.isDummy) {
-        listing = new Dummy(<string>listingData.id, listingData.name, <number>listingData.order);
+        listing = new Dummy(<string>listingData.id, listingData.name, <number>listingData.order, <number>listingData.value);
 
         if(listingData.children) {
           listingData.children.forEach(childId => {

@@ -9,7 +9,7 @@ function srcPath(subdirectory) {
 	return path.join(__dirname, "src", subdirectory);
 }
 
-const isProduction = process.env.NODE_ENV === "production"
+const isProduction = process.env.NODE_ENV === "production";
 
 const commonConfig = {
 	mode: isProduction ? "production" : "development",

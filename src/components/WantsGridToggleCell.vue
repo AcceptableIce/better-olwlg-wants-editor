@@ -58,7 +58,8 @@ export default class WantsGridToggleCell extends Vue {
       "pending-enable": pendingMassEdit === "enable",
       "pending-disable": pendingMassEdit === "disable",
       "dummy": this.hasDummy,
-      "dummy-crossover": this.isDummyCrossoverCell
+      "dummy-crossover": this.isDummyCrossoverCell,
+      "deleting": this.want.toDelete
     };
   }
 
@@ -95,11 +96,7 @@ export default class WantsGridToggleCell extends Vue {
   }
 
   get accessibilityText(): string {
-    const container = document.createElement("div");
-
-    container.innerHTML = this.tooltipText;
-
-    return container.textContent || "";
+    return this.tooltipText.replace(/<[^>]*>/g, "");
   }
 
   startEditing(event: MouseEvent) {
@@ -250,5 +247,17 @@ export default class WantsGridToggleCell extends Vue {
 
 .cell-description-tooltip {
   text-align: center;
+}
+
+.deleting::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+  z-index: 2;
 }
 </style>

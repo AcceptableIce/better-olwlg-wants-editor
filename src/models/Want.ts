@@ -6,12 +6,16 @@ export default class Want {
 	sweeteners: Want[];
 
 	order: number;
+	value: number;
 
-	constructor(id: number, bgg_id: number, name: string, order: number = -1, owner: string | undefined = undefined, sweeteners: Want[] = []) {
+	toDelete: boolean = false;
+
+	constructor(id: number, bgg_id: number, name: string, order: number = -1, value: number = 0, owner: string | undefined = undefined, sweeteners: Want[] = []) {
 		this.id = id;
 		this.bgg_id = bgg_id;
 		this.name = name;
 		this.order = order;
+		this.value = value;
 		this.owner = owner;
 		this.sweeteners = sweeteners;
 	}

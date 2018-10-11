@@ -7,10 +7,14 @@ export default class Dummy extends Listing {
 	children: Listing[];
 
 	order: number;
+	value: number;
 
-	constructor(id: string, name: string, order: number, children: Listing[] = []) {
+	toDelete: boolean = false;
+
+	constructor(id: string, name: string, order: number, value: number = 0, children: Listing[] = []) {
 		super(id, name);
 		this.order = order;
+		this.value = value;
 		this.children = children;
 	}
 

@@ -6,6 +6,7 @@
 import { Vue, Component } from "vue-property-decorator";
 
 import * as wantsStore from "store/WantsStore";
+import Dummy, { WantOrDummy } from "models/Dummy";
 
 const addHiddenInput = (name: string, value: string, form: HTMLFormElement) => {
   const hidden = document.createElement("input");
@@ -15,6 +16,14 @@ const addHiddenInput = (name: string, value: string, form: HTMLFormElement) => {
   hidden.setAttribute("value", value);
 
   form.appendChild(hidden);
+};
+
+const addValueInput = (want: WantOrDummy, form: HTMLFormElement) => {
+  addHiddenInput(
+    `value${want.id}`,
+    want.toDelete ? "delete" : "" + want.value,
+    form
+  );
 };
 
 @Component
@@ -30,12 +39,15 @@ export default class SubmitButton extends Vue {
     form.setAttribute("action", window.location.href);
     form.setAttribute("target", "_self");
 
+    wantsStore.getWants(this.$store).forEach(want => addValueInput(want, form));
+
     wantsStore.getListings(this.$store).forEach(listing => {
       listing.wants.forEach(want => addHiddenInput("want", `${want.id}-${listing.id}`, form));
     });
 
     wantsStore.getDummies(this.$store).forEach(dummy => {
       dummy.children.forEach(child => addHiddenInput("want", `${dummy.id}-${child.id}`, form));
+      addValueInput(dummy, form);
     });
 
     document.body.appendChild(form);
