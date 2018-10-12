@@ -1,13 +1,14 @@
 <template>
 	<div :class="['wants-grid-cell', 'item-data', isDummy ? 'dummy' : '', want.toDelete ? 'deleting' : '']">
 		<div class="item-metadata">
-			<a class="item-name" :href="`https://www.boardgamegeek.com/thing/${want.bgg_id}`">
+			<a class="item-name" :href="want.bgg_id === undefined ? '#' : `https://www.boardgamegeek.com/thing/${want.bgg_id}`">
 				{{want.name}}
 				<accessibility-text>{{want.name}}. Listed by {{want.owner}}. Click to view this item on BoardGameGeek</accessibility-text>
 			</a>
 			<div class="item-owner">{{want.owner}}</div>
     </div>
     <div class="item-options">
+      <view-in-geeklist-link v-if="!isDummy" class="item-option" :want="want"/>
       <price-history-link v-if="!isDummy" class="item-option" :want="want"/>
       <sale-history-link v-if="!isDummy" class="item-option" :want="want"/>
       <div v-if="isDummy" class="dummy-spacer"></div>
@@ -40,13 +41,14 @@ import ToggleableEditorImageLink from "components/ToggleableEditorImageLink.vue"
 import TooltipImageLink from "components/TooltipImageLink.vue";
 import AccessibilityText from "components/AccessibilityText.vue";
 import DeleteToggle from "components/links/DeleteToggle.vue";
+import ViewInGeeklistLink from "components/links/ViewInGeeklistLink.vue";
 import PriceHistoryLink from "components/links/PriceHistoryLink.vue";
 import SaleHistoryLink from "components/links/SaleHistoryLink.vue";
 import Sweetener from "components/Sweetener.vue";
 
 
 @Component({
-  components: { ToggleableEditorImageLink, TooltipImageLink, AccessibilityText, PriceHistoryLink, SaleHistoryLink, Sweetener, DeleteToggle }
+  components: { ToggleableEditorImageLink, TooltipImageLink, AccessibilityText, PriceHistoryLink, SaleHistoryLink, Sweetener, DeleteToggle, ViewInGeeklistLink }
 })
 export default class WantsGridItemDataCell extends Vue {
   @Prop({ required: true })
@@ -92,6 +94,11 @@ export default class WantsGridItemDataCell extends Vue {
   white-space: nowrap;
   overflow-x: hidden;
   text-overflow: ellipsis;
+}
+
+.item-name[href="#"] {
+  color: #000;
+  cursor: default;
 }
 
 .item-owner {
@@ -176,7 +183,7 @@ export default class WantsGridItemDataCell extends Vue {
 
 .dummy-spacer {
   display: block;
-  width: 64px;
+  width: 96px;
   height: 24px;
 }
 

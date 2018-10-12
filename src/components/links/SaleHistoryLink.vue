@@ -1,6 +1,6 @@
 <template>
 	<tooltip-image-link :href="`prices.cgi?gameid=${want.bgg_id}`" image="price-history-table">
-		<template slot="tooltip-text">View the BoardGameGeek sale history of this item.</template>
+		<template slot="tooltip-text">View the BoardGameGeek sale history of this item</template>
 		<template slot="accessibility-text">View the BoardGameGeek sale history of this item.</template>
 	</tooltip-image-link>
 </template>

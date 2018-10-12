@@ -6,7 +6,7 @@
 		</tooltip-image-link-content>
 	</button>
 	
-	<a v-else class="tooltip-image-link" :style="styleData" :href="href" @mouseover="toggleTooltip(true)" @mouseout="toggleTooltip(false)">
+	<a v-else class="tooltip-image-link" :style="styleData" :href="href" :target="href ? '_blank' : ''" @mouseover="toggleTooltip(true)" @mouseout="toggleTooltip(false)">
 		<tooltip-image-link-content :showTooltip="showTooltip">
 			<slot name="tooltip-text" slot="tooltip-text"/>
 			<slot name="accessibility-text" slot="accessibility-text"/>
