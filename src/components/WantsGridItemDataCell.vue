@@ -21,7 +21,9 @@
         </template>
       </toggleable-editor-image-link>
       <div v-else class="no-sweeteners-spacer"></div>
-      <delete-toggle class="item-option" :want="want"/>
+
+      <delete-toggle v-if="!isDummy" class="item-option" :want="want"/>
+      <div v-else class="dummy-spacer delete-spacer"></div>
     </div>
     <div class="value-editor">
       <label class="value-label" :for="`value-input-${want.id}`">Value</label>
@@ -185,6 +187,10 @@ export default class WantsGridItemDataCell extends Vue {
   display: block;
   width: 96px;
   height: 24px;
+}
+
+.dummy-spacer.delete-spacer {
+  width: 32px;
 }
 
 .deleting::after {

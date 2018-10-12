@@ -28,7 +28,7 @@ export interface WantsState {
 const findWant = (state: WantsState, id: ListingId) => find(state.wants, want => want.id === id);
 const findListing = (state: WantsState, id: ListingId) => find(state.listings, listing => listing.id === id);
 
-const concatAndSortWantsAndDumimies = (state: WantsState) => (<WantOrDummy[]>state.wants)
+const concatAndSortWantsAndDummies = (state: WantsState) => (<WantOrDummy[]>state.wants)
 	.concat(<Dummy[]>state.listings.filter(item => item instanceof Dummy))
 	.sort((a, b) => a.order - b.order);
 
@@ -74,7 +74,7 @@ export const WantsConfiguration = {
 		},
 
 		getSortedWantsAndDummies(state: WantsState): WantOrDummy[] {
-			return concatAndSortWantsAndDumimies(state).map(cloneDeep);
+			return concatAndSortWantsAndDummies(state).map(cloneDeep);
 		},
 
 		getRowFrequencies(state: WantsState): { [index: string]: number } {
@@ -180,17 +180,12 @@ export const WantsConfiguration = {
 		updateWantStatusByMassEdit(state: WantsState, massEditState: MassEditState) {
 			if(massEditState.boundries) {
 				const boundries: CoordinateBoundries = massEditState.boundries;
-				const wantsAndDummies: WantOrDummy[] = concatAndSortWantsAndDumimies(state);
+				const wantsAndDummies: WantOrDummy[] = concatAndSortWantsAndDummies(state);
 
 				for(let y = boundries.min.y; y <= boundries.max.y; y += 1) {
 					for(let x = boundries.min.x; x <= boundries.max.x; x += 1) {
 						let want: WantOrDummy = wantsAndDummies[y];
 						const listing = state.listings[x];
-
-						if(y >= state.wants.length) {
-							// The want is a dummy
-							want = <Dummy>(state.listings.filter(x => x instanceof Dummy)[y - state.wants.length]);
-						}
 
 						if(want && listing) {
 							if(want instanceof Dummy) {
