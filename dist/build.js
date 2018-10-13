@@ -34996,17 +34996,17 @@ __webpack_require__.r(__webpack_exports__);
 
 var findWant = function (state, id) { return lodash__WEBPACK_IMPORTED_MODULE_1___default.a.find(state.wants, function (want) { return want.id === id; }); };
 var findListing = function (state, id) { return lodash__WEBPACK_IMPORTED_MODULE_1___default.a.find(state.listings, function (listing) { return listing.id === id; }); };
-var want1 = new models_Want__WEBPACK_IMPORTED_MODULE_2__["default"](1, 175914, "Want 1", "AcceptableIce");
+var want1 = new models_Want__WEBPACK_IMPORTED_MODULE_2__["default"](1, 175914, "Want 1", "Corvimae");
 var listing2 = new models_Listing__WEBPACK_IMPORTED_MODULE_3__["default"](2, "Listing 2");
 var WantsConfiguration = {
     namespaced: true,
     state: {
         wants: [
             want1,
-            new models_Want__WEBPACK_IMPORTED_MODULE_2__["default"](2, 175914, "Want 2", "AcceptableIce", [
-                new models_Want__WEBPACK_IMPORTED_MODULE_2__["default"](3, 1000, "SweetnerTest", "AcceptableIce")
+            new models_Want__WEBPACK_IMPORTED_MODULE_2__["default"](2, 175914, "Want 2", "Corvimae", [
+                new models_Want__WEBPACK_IMPORTED_MODULE_2__["default"](3, 1000, "SweetnerTest", "Corvimae")
             ]),
-            new models_Want__WEBPACK_IMPORTED_MODULE_2__["default"](3, 123, "Game with a Longer Name than the Rest", "AcceptableIce")
+            new models_Want__WEBPACK_IMPORTED_MODULE_2__["default"](3, 123, "Game with a Longer Name than the Rest", "Corvimae")
         ],
         listings: [
             new models_Listing__WEBPACK_IMPORTED_MODULE_3__["default"](1, "Listing 1", [want1]),

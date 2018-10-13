@@ -14,8 +14,10 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
+
 import AppStore from "store/AppStore";
 import * as WantsStore from "store/WantsStore";
+import * as InteractivityStore from "store/InteractivityStore";
 
 import WantsGrid from "components/WantsGrid.vue";
 import SubmitButton from "components/SubmitButton.vue";

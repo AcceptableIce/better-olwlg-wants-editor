@@ -22,6 +22,8 @@ import Dummy, { WantOrDummy } from "models/Dummy";
 import Listing from "models/Listing";
 import Want from "models/Want";
 
+export type PendingStatus = "enabled" | "disabled" | undefined;
+
 @Component({
   components: { Tooltip, AccessibilityText }
 })
@@ -38,7 +40,11 @@ export default class WantsGridToggleCell extends Vue {
   @Prop({ required: true })
   y!: number;
 
+  @Prop({ default: undefined, type: [String] })
+  pendingUpdateStatus: PendingStatus = undefined;
+
   focused: boolean = false;
+
 
   get toggled(): boolean {
     if(this.want instanceof Dummy) {
@@ -49,14 +55,12 @@ export default class WantsGridToggleCell extends Vue {
   }
 
   get cellClasses(): object {
-    const pendingMassEdit = this.getPendingMassEdit();
-
     return {
       "wants-grid-cell": true,
       "toggle-cell": true,
       enabled: this.toggled,
-      "pending-enable": pendingMassEdit === "enable",
-      "pending-disable": pendingMassEdit === "disable",
+      "pending-enable": this.pendingUpdateStatus === "enabled",
+      "pending-disable": this.pendingUpdateStatus === "disabled",
       "dummy": this.hasDummy,
       "dummy-crossover": this.isDummyCrossoverCell,
       "deleting": this.want.toDelete
@@ -129,20 +133,6 @@ export default class WantsGridToggleCell extends Vue {
 
   setFocus(focus: boolean) {
     this.focused = focus && !interactivity.isMassEditing(this.$store);
-  }
-
-  getPendingMassEdit(): string | undefined {
-    const massEditStatus = interactivity.getMassEditStatus(this.$store);
-
-    if(massEditStatus.isEditing && massEditStatus.boundries) {
-      const boundries: CoordinateBoundries = massEditStatus.boundries;
-
-      if(boundries.min.x <= this.x && boundries.min.y <= this.y && boundries.max.x >= this.x && boundries.max.y >= this.y) {
-        return massEditStatus.enableAfterRelease ? "enable" : "disable";
-      }
-    }
-
-    return undefined;
   }
 
   get coordinates(): Coordinate {

@@ -87,6 +87,7 @@ export default class WantsGridItemDataCell extends Vue {
   flex-shrink: 1;
   align-self: stretch;
   min-width: 0;
+  max-width: 400px;
 }
 
 .item-name {
@@ -94,7 +95,7 @@ export default class WantsGridItemDataCell extends Vue {
   text-decoration: none;
   color: #0d17ad;
   white-space: nowrap;
-  overflow-x: hidden;
+  overflow: hidden;
   text-overflow: ellipsis;
 }
 

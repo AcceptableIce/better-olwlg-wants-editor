@@ -3,7 +3,6 @@ import { getStoreAccessors } from "vuex-typescript";
 import { AppState } from "store/AppStore";
 
 import find from "lodash/find";
-import cloneDeep from "lodash/cloneDeep";
 
 import Want from "models/Want";
 import Listing, { ListingId } from "models/Listing";
@@ -28,9 +27,11 @@ export interface WantsState {
 const findWant = (state: WantsState, id: ListingId) => find(state.wants, want => want.id === id);
 const findListing = (state: WantsState, id: ListingId) => find(state.listings, listing => listing.id === id);
 
-const concatAndSortWantsAndDummies = (state: WantsState) => (<WantOrDummy[]>state.wants)
-	.concat(<Dummy[]>state.listings.filter(item => item instanceof Dummy))
-	.sort((a, b) => a.order - b.order);
+export const utilities = {
+	concatAndSortWantsAndDummies: (wants: Want[], listings: Listing[]) => (<WantOrDummy[]>wants)
+		.concat(<Dummy[]>listings.filter(item => item instanceof Dummy))
+		.sort((a, b) => a.order - b.order)
+};
 
 type WantsContext = ActionContext<WantsState, AppState>;
 
@@ -54,27 +55,23 @@ export const WantsConfiguration = {
 		},
 
 		getWants(state: WantsState) {
-			return state.wants.map(cloneDeep);
+			return state.wants;
 		},
 
 		getWantById(state: WantsState) {
-			return (id: number) => cloneDeep(findWant(state, id));
+			return (id: number) => findWant(state, id);
 		},
 
 		getListings(state: WantsState) {
-			return state.listings.map(cloneDeep);
+			return state.listings;
 		},
 
 		getListingById(state: WantsState) {
-			return (id: number) => cloneDeep(findListing(state, id));
+			return (id: number) => findListing(state, id);
 		},
 
 		getDummies(state: WantsState): Dummy[] {
-			return <Dummy[]>state.listings.filter(item => item instanceof Dummy).map(cloneDeep);
-		},
-
-		getSortedWantsAndDummies(state: WantsState): WantOrDummy[] {
-			return concatAndSortWantsAndDummies(state).map(cloneDeep);
+			return <Dummy[]>state.listings.filter(item => item instanceof Dummy);
 		},
 
 		getRowFrequencies(state: WantsState): { [index: string]: number } {
@@ -82,12 +79,12 @@ export const WantsConfiguration = {
 
 			state.listings.forEach(listing => {
 				if(listing instanceof Dummy) {
-					output[listing.id] = (<Dummy>listing).children.length;
+					output[listing.id] = Object.keys((<Dummy>listing).children).length;
 				} else {
-					listing.wants.forEach(want => {
-						if(!output[want.id]) output[want.id] = 0;
+					Object.keys(listing.wants).forEach(wantId => {
+						if(!output[wantId]) output[wantId] = 0;
 
-						output[want.id] += 1;
+						output[wantId] += 1;
 					});
 				}
 			});
@@ -180,7 +177,7 @@ export const WantsConfiguration = {
 		updateWantStatusByMassEdit(state: WantsState, massEditState: MassEditState) {
 			if(massEditState.boundries) {
 				const boundries: CoordinateBoundries = massEditState.boundries;
-				const wantsAndDummies: WantOrDummy[] = concatAndSortWantsAndDummies(state);
+				const wantsAndDummies: WantOrDummy[] = utilities.concatAndSortWantsAndDummies(state.wants, state.listings);
 
 				for(let y = boundries.min.y; y <= boundries.max.y; y += 1) {
 					for(let x = boundries.min.x; x <= boundries.max.x; x += 1) {
@@ -229,7 +226,6 @@ export const getWantById = read(getters.getWantById);
 export const getListings = read(getters.getListings);
 export const getListingById = read(getters.getListingById);
 export const getDummies = read(getters.getDummies);
-export const getSortedWantsAndDummies = read(getters.getSortedWantsAndDummies);
 export const getRowFrequencies = read(getters.getRowFrequencies);
 
 const mutations = WantsConfiguration.mutations;

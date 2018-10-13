@@ -1,6 +1,6 @@
 import Want from "models/Want";
 
-import find from "lodash/find";
+import Vue from "vue";
 
 export type ListingId = number | string;
 
@@ -8,35 +8,28 @@ export default class Listing {
 	id: ListingId;
 	name: string;
 
-	wants: Want[];
+	wants: { [number: string]: Want } = {};
 
 	constructor(id: ListingId, name: string, wants: Want[] = []) {
 		this.id = id;
 		this.name = name;
-		this.wants = wants;
-	}
 
-	getWant(id: number): Want | undefined {
-		return find(this.wants, { id });
+		wants.forEach(want => this.addWant(want));
 	}
 
 	hasWant(want: Want): boolean {
-		return this.getWant(want.id) !== undefined;
+		return this.wants[want.id] !== undefined;
 	}
 
 	addWant(want: Want) {
-		const match = this.getWant(want.id);
-
-		if(!match) {
-			this.wants.push(want);
+		if(!this.hasWant(want)) {
+			Vue.set(this.wants, String(want.id), want);
 		}
 	}
 
 	removeWant(want: Want) {
-		const match = this.getWant(want.id);
-
-		if(match) {
-			this.wants.splice(this.wants.indexOf(match), 1);
+		if(this.hasWant(want)) {
+			Vue.delete(this.wants, String(want.id));
 		}
 	}
 }

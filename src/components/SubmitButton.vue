@@ -42,11 +42,11 @@ export default class SubmitButton extends Vue {
     wantsStore.getWants(this.$store).forEach(want => addValueInput(want, form));
 
     wantsStore.getListings(this.$store).forEach(listing => {
-      listing.wants.forEach(want => addHiddenInput("want", `${want.id}-${listing.id}`, form));
+      Object.keys(listing.wants).forEach(wantId => addHiddenInput("want", `${wantId}-${listing.id}`, form));
     });
 
     wantsStore.getDummies(this.$store).forEach(dummy => {
-      dummy.children.forEach(child => addHiddenInput("want", `${dummy.id}-${child.id}`, form));
+      Object.keys(dummy.children).forEach(childId => addHiddenInput("want", `${dummy.id}-${childId}`, form));
       addValueInput(dummy, form);
     });
 
